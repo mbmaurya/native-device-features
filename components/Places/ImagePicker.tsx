@@ -3,6 +3,7 @@ import {
   useCameraPermissions,
   PermissionStatus,
   ImagePickerResult,
+  launchImageLibraryAsync,
 } from "expo-image-picker";
 import { useState } from "react";
 import {
@@ -17,7 +18,7 @@ import {
 import { Colors } from "../../constants/colors";
 import OutlineButton from "../../UI/OutlineButton";
 
-function ImagePicker() {
+function ImagePicker({onTakeImage}: {onTakeImage: (imageUri: string) => void}) {
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [pickedImage, setPickedImage] = useState<ImageSourcePropType>();
@@ -40,21 +41,30 @@ function ImagePicker() {
   }
 
   async function takeImageHandler() {
+    console.log("In image handler function")
     const hasPermission = await verifyPermission();
+    console.log(hasPermission)
 
     if (!hasPermission) {
       return;
     }
 
-    const image: ImagePickerResult = await launchCameraAsync({
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 0.5,
-    });
+    try {
+      const image: ImagePickerResult = await launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.5,
+          });
 
-    if (image.assets) {
-      setPickedImage({ uri: image.assets[0].uri });
+          if (image.assets) {
+            setPickedImage({ uri: image.assets[0].uri });
+            onTakeImage(image.assets[0].uri)
+          }
+    }catch(error) {
+      console.log(error)
     }
+
+   
   }
 
   return (
