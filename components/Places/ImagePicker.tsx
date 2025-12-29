@@ -1,5 +1,4 @@
 import {
-  launchCameraAsync,
   useCameraPermissions,
   PermissionStatus,
   ImagePickerResult,
@@ -8,17 +7,21 @@ import {
 import { useState } from "react";
 import {
   Alert,
-  Button,
   Image,
   ImageSourcePropType,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+
 import { Colors } from "../../constants/colors";
 import OutlineButton from "../../UI/OutlineButton";
 
-function ImagePicker({onTakeImage}: {onTakeImage: (imageUri: string) => void}) {
+function ImagePicker({
+  onTakeImage,
+}: {
+  onTakeImage: (imageUri: string) => void;
+}) {
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [pickedImage, setPickedImage] = useState<ImageSourcePropType>();
@@ -41,9 +44,7 @@ function ImagePicker({onTakeImage}: {onTakeImage: (imageUri: string) => void}) {
   }
 
   async function takeImageHandler() {
-    console.log("In image handler function")
     const hasPermission = await verifyPermission();
-    console.log(hasPermission)
 
     if (!hasPermission) {
       return;
@@ -51,20 +52,18 @@ function ImagePicker({onTakeImage}: {onTakeImage: (imageUri: string) => void}) {
 
     try {
       const image: ImagePickerResult = await launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 0.5,
-          });
+        allowsEditing: true,
+        aspect: [16, 9],
+        quality: 0.5,
+      });
 
-          if (image.assets) {
-            setPickedImage({ uri: image.assets[0].uri });
-            onTakeImage(image.assets[0].uri)
-          }
-    }catch(error) {
-      console.log(error)
+      if (image.assets) {
+        setPickedImage({ uri: image.assets[0].uri });
+        onTakeImage(image.assets[0].uri);
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-   
   }
 
   return (
@@ -76,7 +75,7 @@ function ImagePicker({onTakeImage}: {onTakeImage: (imageUri: string) => void}) {
           <Text>No image taken yet</Text>
         )}
       </View>
-      {/* <Button title="Take Image" onPress={takeImageHandler} /> */}
+
       <OutlineButton onPress={takeImageHandler} name="camera">
         Take Image
       </OutlineButton>

@@ -1,4 +1,4 @@
-const GOOGLE_API_KEY = "";
+const GOOGLE_API_KEY = "USER_YOUR_GOOGLE_API_KEY";
 
 interface getMapPreviewProps {
   lat: number;
@@ -12,11 +12,11 @@ function getMapPreview({ lat, long }: getMapPreviewProps) {
 }
 
 export async function getAddress(lat: number, lng: number) {
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`;
   const response = await fetch(url);
 
-  if(!response.ok) {
-    throw new Error("Failed to fetch response")
+  if (!response.ok) {
+    throw new Error("Failed to fetch response");
   }
 
   const data = await response.json();

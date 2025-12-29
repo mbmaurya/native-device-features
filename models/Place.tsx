@@ -1,7 +1,7 @@
 export interface LocationProps {
-  lat?: number,
-  lng?: number,
-  address?: string
+  lat?: number;
+  lng?: number;
+  address?: string;
 }
 
 export class Place {
@@ -13,12 +13,13 @@ export class Place {
   constructor(
     title?: string,
     imageUri?: string,
-    location?: LocationProps | null
+    location?: LocationProps | null,
+    id?: string
   ) {
     this.title = title;
     this.imageUri = imageUri;
     this.address = location?.address;
-    this.location = {lat: location?.lat, lng: location?.lng};
-    this.id = new Date().toString() + Math.random().toString();
+    this.location = { lat: location?.lat, lng: location?.lng };
+    this.id = id;
   }
 }

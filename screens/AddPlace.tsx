@@ -5,31 +5,43 @@ import ImagePicker from "../components/Places/ImagePicker";
 import LocationPicker from "../components/Places/LocationPicker";
 import Button from "../UI/Button";
 import { Place } from "../models/Place";
+import { insertPlace } from "../utils/database";
 
-function AddPlace({navigation}:{navigation: any}) {
+function AddPlace({ navigation }: { navigation: any }) {
   const [enteredTitle, setEnteredTitle] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [pickedLocation, setPickedLocation] = useState<{lat: number, lng: number} | null>(null)
+  const [pickedLocation, setPickedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   function changeTitleHandler(enteredText: string) {
     setEnteredTitle(enteredText);
   }
 
   function takeImageHandler(imageUri: string) {
-    setSelectedImage(imageUri)
+    setSelectedImage(imageUri);
   }
 
-  const pickLocationHandler = useCallback((location: {lat: number, lng: number}) => {
-    setPickedLocation(location)
-  },[])
+  const pickLocationHandler = useCallback(
+    (location: { lat: number; lng: number }) => {
+      setPickedLocation(location);
+    },
+    []
+  );
 
-  function createPlaceHandler(place: Place) {
-    navigation.navigate('AllPlaces', {place: place})
+  async function createPlaceHandler(place: Place) {
+    try {
+      await insertPlace(place);
+      navigation.navigate("AllPlaces");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage, pickedLocation)
-    createPlaceHandler(placeData)
+    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
+    createPlaceHandler(placeData);
   }
 
   return (

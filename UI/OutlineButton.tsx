@@ -1,7 +1,8 @@
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { IconProps } from "@expo/vector-icons/build/createIconSet";
-import React from "react";
-import { Pressable, PressableProps, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
+
 import { Colors } from "../constants/colors";
 
 interface OutlineButtonProps extends IconProps<any> {

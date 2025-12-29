@@ -1,55 +1,67 @@
 import { Alert, Image, StyleSheet, Text, View } from "react-native";
-import OutlineButton from "../../UI/OutlineButton";
-import { Colors } from "../../constants/colors";
 import {
   getCurrentPositionAsync,
-  getProviderStatusAsync,
   PermissionStatus,
   useForegroundPermissions,
 } from "expo-location";
 import { useEffect, useState } from "react";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+
+import OutlineButton from "../../UI/OutlineButton";
+import { Colors } from "../../constants/colors";
 import getMapPreview, { getAddress } from "../../utils/location";
-import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
-import Map from "../../screens/Map";
 
 interface LocationPickerProps {
-  onPickLocation: ({lat, lng, address}: {lat: number, lng: number, address: string}) => void | null
+  onPickLocation: ({
+    lat,
+    lng,
+    address,
+  }: {
+    lat: number;
+    lng: number;
+    address: string;
+  }) => void | null;
 }
 
 function LocationPicker(props: LocationPickerProps) {
-  const {onPickLocation} = props;
+  const { onPickLocation } = props;
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
   const [pickedLocation, setPickedLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-  const navigation = useNavigation();
-  const route = useRoute();
+  const navigation: any = useNavigation();
+  const route: any = useRoute();
   const isFocused = useIsFocused();
 
-  
-
   useEffect(() => {
-    if(isFocused && route.params) {
+    if (isFocused && route.params) {
       const mapPickedLocation = {
         lat: route.params.pickedLat,
-        lng: route.params.pickedLng
-      }   
+        lng: route.params.pickedLng,
+      };
       setPickedLocation(mapPickedLocation);
     }
-  },[route, isFocused])
+  }, [route, isFocused]);
 
   useEffect(() => {
     async function handleLocation() {
-      if(pickedLocation) {
-        const address = await getAddress(pickedLocation.lat, pickedLocation.lng);
-        onPickLocation({...pickedLocation, address: address})
+      if (pickedLocation) {
+        const address = await getAddress(
+          pickedLocation.lat,
+          pickedLocation.lng
+        );
+        onPickLocation({ ...pickedLocation, address: address });
       }
     }
-    
+
     handleLocation();
-  },[pickedLocation, onPickLocation])
+  }, [pickedLocation, onPickLocation]);
 
   async function verifyPermission() {
     if (
@@ -70,21 +82,17 @@ function LocationPicker(props: LocationPickerProps) {
   }
 
   async function getLocationHandler() {
-    console.log("Inside location handler");
     const hasPermission = await verifyPermission();
 
     if (!hasPermission) {
       return;
     }
 
-   
-      const locationStatus = await getProviderStatusAsync();
-      const location = await getCurrentPositionAsync();
-       setPickedLocation({
+    const location = await getCurrentPositionAsync();
+    setPickedLocation({
       lat: location.coords.latitude,
-      long: location.coords.longitude,
+      lng: location.coords.longitude,
     });
-   
   }
 
   function pickOnMapHandler() {
